@@ -22,7 +22,7 @@ check_dir()
 
 
 # Check if Darknet is compiled
-check_file "darknet/libdarknet.so"
+check_file "darknet/libdarknet.so.1" # [ST210915] workaround for colad to change .so to .so.1
 retval=$?
 if [ $retval -eq 0 ]
 then
