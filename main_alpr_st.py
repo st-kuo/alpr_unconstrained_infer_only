@@ -41,7 +41,7 @@ if __name__ == '__main__':
 	
         input_dir  = sys.argv[1]
         output_dir = sys.argv[2] # [ST210917] This will be passed into OCR def-function
-		csv_file = sys.argv[3]
+        csv_file = sys.argv[3]
 
 #        lp_model_path = 'data/lp-detector/wpod-net_update1.h5' # [ST210918] This is for licenseplatedetectionfunc
 
