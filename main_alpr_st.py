@@ -16,8 +16,8 @@ from os 					import makedirs
 from src.utils 				import crop_region, image_files_from_folder
 from darknet.python.darknet import detect
 
-from licenseplatedetectionfunc import lp_detect
-from licenseplateocrfunc import lp_ocr
+from licenseplatedetectionfunc_main import lp_detect
+from licenseplateocrfunc_main import lp_ocr
 from tempfile import NamedTemporaryFile
 
 # [ST210918] for license plate detection module
