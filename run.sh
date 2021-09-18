@@ -22,7 +22,7 @@ check_dir()
 
 
 # Check if Darknet is compiled
-check_file "darknet/libdarknet.so.1" # [ST210915] workaround for colad to change .so to .so.1
+check_file "darknet/libdarknet.so"
 retval=$?
 if [ $retval -eq 0 ]
 then
@@ -30,7 +30,7 @@ then
 	exit 1
 fi
 
-lp_model="data/lp-detector/wpod-net_update1.h5"
+#S lp_model="data/lp-detector/wpod-net_update1.h5"
 input_dir=''
 output_dir=''
 csv_file=''
@@ -90,17 +90,17 @@ set -e
 python vehicle-detection.py $input_dir $output_dir
 
 # Detect license plates
-python license-plate-detection.py $output_dir $lp_model
+#S python license-plate-detection.py $output_dir $lp_model
 
 # OCR
-python license-plate-ocr.py $output_dir
+#S python license-plate-ocr.py $output_dir
 
 # Draw output and generate list
 python gen-outputs.py $input_dir $output_dir > $csv_file
 
 # Clean files and draw output
-rm $output_dir/*_lp.png
-rm $output_dir/*car.png
-rm $output_dir/*_cars.txt
-rm $output_dir/*_lp.txt
-rm $output_dir/*_str.txt
+#S rm $output_dir/*_lp.png
+#S rm $output_dir/*car.png
+#S rm $output_dir/*_cars.txt
+#S rm $output_dir/*_lp.txt
+#S rm $output_dir/*_str.txt

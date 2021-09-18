@@ -16,8 +16,8 @@ from os 					import makedirs
 from src.utils 				import crop_region, image_files_from_folder
 from darknet.python.darknet import detect
 
-import license-plate-detection-def import lp_detect
-import license-plate-ocr-def import lp_ocr
+import license-plate-detection-func import lp_detect
+import license-plate-ocr-func import lp_ocr
 from tempfile import NamedTemporaryFile
 
 if __name__ == '__main__':
