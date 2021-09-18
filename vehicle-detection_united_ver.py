@@ -16,8 +16,8 @@ from os 					import makedirs
 from src.utils 				import crop_region, image_files_from_folder
 from darknet.python.darknet import detect
 
-import license-plate-detection-func import lp_detect
-import license-plate-ocr-func import lp_ocr
+from licenseplatedetectionfunc import lp_detect
+from licenseplateocrfunc import lp_ocr
 from tempfile import NamedTemporaryFile
 
 if __name__ == '__main__':
@@ -26,6 +26,8 @@ if __name__ == '__main__':
 	
         input_dir  = sys.argv[1]
         output_dir = sys.argv[2] # [ST210917] This will be passed into OCR def-function
+		
+		lp_model_path = 'data/lp-detector/wpod-net_update1.h5' # [ST210918] This is for licenseplatedetectionfunc
 
         vehicle_threshold = .2
 
@@ -112,7 +114,7 @@ if __name__ == '__main__':
 #                lwrite('%s/%s_cars.txt' % (output_dir,bname),Lcars)
 				
                 # [ST210918] Add the portion of license plate detection and OCR
-                Detected_lps = lp_detect(Dcars)
+                Detected_lps = lp_detect(Dcars, lp_model_path)
                 lp_ocr(Detected_lps)
                 
                 for f in tempfile_handlers: # [ST210918] release tempfile handlers
