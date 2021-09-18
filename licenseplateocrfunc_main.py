@@ -32,15 +32,14 @@ def lp_ocr(lp_paths, output_dir, img_filename, ocr_net, ocr_meta):
 
     ocr_threshold = .4
 
-'''
     # [ST210918] move to 
-    ocr_weights = 'data/ocr/ocr-net.weights'
-    ocr_netcfg  = 'data/ocr/ocr-net.cfg'
-    ocr_dataset = 'data/ocr/ocr-net.data'
+#S    ocr_weights = 'data/ocr/ocr-net.weights'
+#S    ocr_netcfg  = 'data/ocr/ocr-net.cfg'
+#S    ocr_dataset = 'data/ocr/ocr-net.data'
 
-    ocr_net  = dn.load_net(bytes(ocr_netcfg, encoding='utf-8'), bytes(ocr_weights, encoding='utf-8'), 0)
-    ocr_meta = dn.load_meta(bytes(ocr_dataset, encoding='utf-8'))
-'''
+#S    ocr_net  = dn.load_net(bytes(ocr_netcfg, encoding='utf-8'), bytes(ocr_weights, encoding='utf-8'), 0)
+#S    ocr_meta = dn.load_meta(bytes(ocr_dataset, encoding='utf-8'))
+
 #S    imgs_paths = sorted(glob('%s/*lp.png' % output_dir))
     img_paths = lp_paths # [ST210917] i.e., Dlps from license plate detection
 
