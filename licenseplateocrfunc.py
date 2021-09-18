@@ -12,6 +12,7 @@ from darknet.python.darknet import detect
 from src.label				import dknet_label_conversion
 from src.utils 				import nms
 
+'''
 # [ST210917] move out of def-function and only to load once
 ocr_threshold = .4
 
@@ -22,13 +23,13 @@ ocr_dataset = 'data/ocr/ocr-net.data'
 ocr_net  = dn.load_net(bytes(ocr_netcfg, encoding='utf-8'), bytes(ocr_weights, encoding='utf-8'), 0)
 ocr_meta = dn.load_meta(bytes(ocr_dataset, encoding='utf-8'))
 #####################################
+'''
 
 def lp_ocr(lp_paths, output_dir, img_filename):
 
 #S    input_dir  = sys.argv[1]
 #S    output_dir = input_dir
 
-'''
     ocr_threshold = .4
 
     ocr_weights = 'data/ocr/ocr-net.weights'
@@ -37,7 +38,6 @@ def lp_ocr(lp_paths, output_dir, img_filename):
 
     ocr_net  = dn.load_net(bytes(ocr_netcfg, encoding='utf-8'), bytes(ocr_weights, encoding='utf-8'), 0)
     ocr_meta = dn.load_meta(bytes(ocr_dataset, encoding='utf-8'))
-'''
 
 #S    imgs_paths = sorted(glob('%s/*lp.png' % output_dir))
     img_paths = lp_paths # [ST210917] i.e., Dlps from license plate detection

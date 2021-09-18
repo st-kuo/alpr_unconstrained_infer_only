@@ -115,7 +115,7 @@ if __name__ == '__main__':
 				
                 # [ST210918] Add the portion of license plate detection and OCR
                 Detected_lps = lp_detect(Dcars, lp_model_path)
-                lp_ocr(Detected_lps)
+                lp_ocr(Detected_lps, output_dir, img_filename)
                 
                 for f in tempfile_handlers: # [ST210918] release tempfile handlers
                     f.close()
