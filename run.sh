@@ -22,7 +22,7 @@ check_dir()
 
 
 # Check if Darknet is compiled
-check_file "darknet/libdarknet.so"
+check_file "darknet/libdarknet.so.1"
 retval=$?
 if [ $retval -eq 0 ]
 then
@@ -30,7 +30,7 @@ then
 	exit 1
 fi
 
-#S lp_model="data/lp-detector/wpod-net_update1.h5"
+lp_model="data/lp-detector/wpod-net_update1.h5"
 input_dir=''
 output_dir=''
 csv_file=''
@@ -87,20 +87,20 @@ fi
 set -e
 
 # Detect vehicles
-python vehicle-detection.py $input_dir $output_dir
+python vehicle-detection_united_ver.py $input_dir $output_dir
 
 # Detect license plates
-#S python license-plate-detection.py $output_dir $lp_model
+python license-plate-detection.py $output_dir $lp_model
 
 # OCR
-#S python license-plate-ocr.py $output_dir
+python license-plate-ocr.py $output_dir
 
 # Draw output and generate list
 python gen-outputs.py $input_dir $output_dir > $csv_file
 
 # Clean files and draw output
-#S rm $output_dir/*_lp.png
-#S rm $output_dir/*car.png
-#S rm $output_dir/*_cars.txt
-#S rm $output_dir/*_lp.txt
-#S rm $output_dir/*_str.txt
+rm $output_dir/*_lp.png
+rm $output_dir/*car.png
+rm $output_dir/*_cars.txt
+rm $output_dir/*_lp.txt
+rm $output_dir/*_str.txt
