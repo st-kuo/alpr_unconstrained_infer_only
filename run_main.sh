@@ -87,7 +87,7 @@ fi
 set -e
 
 # Detect vehicles
-python main_alpr_st.py $input_dir $output_dir $csv_file
+python main_alpr_st.py $input_dir $output_dir $csv_file $lp_model
 
 # Detect license plates
 #S python license-plate-detection.py $output_dir $lp_model

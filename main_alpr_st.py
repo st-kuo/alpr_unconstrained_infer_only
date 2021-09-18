@@ -43,6 +43,7 @@ if __name__ == '__main__':
         output_dir = sys.argv[2] # [ST210917] This will be passed into OCR def-function
         csv_file = sys.argv[3]
 
+
 #        lp_model_path = 'data/lp-detector/wpod-net_update1.h5' # [ST210918] This is for licenseplatedetectionfunc
 
         vehicle_threshold = .2
@@ -56,7 +57,7 @@ if __name__ == '__main__':
 
         # [ST210918] for license plate detection
         print("[INFO] Loading license plate detection model...")
-        wpod_net_path = 'data/lp-detector/wpod-net_update1.h5' 
+        wpod_net_path = sys.argv[4] 
         wpod_net = load_model(wpod_net_path)        
         ############################################
 
