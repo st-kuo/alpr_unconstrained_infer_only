@@ -42,15 +42,20 @@ if __name__ == '__main__':
 
 	try:
 
-		# [ST210919] for vehicle detection
+		# [ST210919] argv[1] is to hold the images with cars
+		#            argv[2] is the directory to place the output images in all stages
+		#            argv[3] is the csv file name which to record all the images and 
+		#                    their license plate numbers
 		input_dir  = sys.argv[1]
-		output_dir = sys.argv[2] # [ST210917] This will be passed into OCR def-function
+		output_dir = sys.argv[2]
 		csv_file = sys.argv[3]
 
-#    lp_model_path = 'data/lp-detector/wpod-net_update1.h5' # [ST210918] This is for licenseplatedetectionfunc
-
+		# [ST210919] set up the detection thresholds for 3 stages
 		vehicle_threshold = .2
+		lp_threshold = .5
+		ocr_threshold = .4
 
+		# [ST210919] set up the vehicle model architecture and weights
 		vehicle_weights = 'data/vehicle-detector/yolo-voc.weights'
 		vehicle_netcfg  = 'data/vehicle-detector/yolo-voc.cfg'
 		vehicle_dataset = 'data/vehicle-detector/voc.data'
@@ -59,8 +64,14 @@ if __name__ == '__main__':
 		vehicle_net  = dn.load_net(bytes(vehicle_netcfg, encoding='utf-8'), bytes(vehicle_weights, encoding='utf-8'), 0)
 		vehicle_meta = dn.load_meta(bytes(vehicle_dataset, encoding='utf-8'))
 		############################################
-		
-		# [ST210918] for ocr
+
+		# [ST210919] set up the license plate detection model artchitecture and weights
+		print("[INFO] Loading license plate detection model...")
+		wpod_net_path = 'data/lp-detector/wpod-net_update1.h5' 
+		wpod_net = load_model(wpod_net_path)
+		############################################
+	
+		# [ST210919] set up the ocr model architecture and weights
 		ocr_weights = 'data/ocr/ocr-net.weights'
 		ocr_netcfg  = 'data/ocr/ocr-net.cfg'
 		ocr_dataset = 'data/ocr/ocr-net.data'
@@ -69,29 +80,18 @@ if __name__ == '__main__':
 		ocr_net  = dn.load_net(bytes(ocr_netcfg, encoding='utf-8'), bytes(ocr_weights, encoding='utf-8'), 0)
 		ocr_meta = dn.load_meta(bytes(ocr_dataset, encoding='utf-8'))
 		############################################
-                
-		imgs_paths = image_files_from_folder(input_dir)
-		imgs_paths.sort()
 
-		
-#S		input_dir  = sys.argv[1]
-#S		output_dir = input_dir
 
-		lp_threshold = .5
-		
-		ocr_threshold = .4
+		# [ST210919] Start vehicle detection             
+		img_paths = image_files_from_folder(input_dir)
+		img_paths.sort()
 
-		print("[INFO] Loading license plate detection model...")
-		wpod_net_path = 'data/lp-detector/wpod-net_update1.h5' # [ST210919] change from [2] t0 [4] for matching cmd line arguments 
-		wpod_net = load_model(wpod_net_path)
-
-		# [ST210919] Add vehicle detection code^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 		if not isdir(output_dir):
 		    makedirs(output_dir)
 
 		print ('[INFO] Searching for vehicles using YOLO...')
 
-		for i, img_path in enumerate(imgs_paths):
+		for i, img_path in enumerate(img_paths):
 
 		    print ('\tScanning %s' % img_path)
 
@@ -99,17 +99,18 @@ if __name__ == '__main__':
 		    #            the file in the memory when the current image process is finished.
 		    tempfile_handlers = []
 
-		    img_filename = basename(splitext(img_path)[0]) # [ST210917] This will be passed into OCR def-function
+		    # [ST210917] This original filename will be used to indicate each image in the csv file
+		    img_filename = basename(splitext(img_path)[0])
 
 		    # [ST210917] This is the successful pattern to use tempfile to store and
 		    #            retrive image.
-		    image_st = cv2.imread(img_path)
-		    image_bytes = cv2.imencode('.png', image_st)[1].tobytes()
+#S		    image_st = cv2.imread(img_path)
+#S		    image_bytes = cv2.imencode('.png', image_st)[1].tobytes()
+#S
+#S		    f = NamedTemporaryFile(mode='w+b', suffix='.png')
+#S		    f.write(image_bytes)
 
-		    f = NamedTemporaryFile(mode='w+b', suffix='.png')
-		    f.write(image_bytes)
-
-		    image_st_ = cv2.imread(f.name)
+#S		    image_st_ = cv2.imread(f.name)
 #            print("difference between disk version and tempfile version: ", image_st - image_st_)
 		    ##################################
 
@@ -118,7 +119,7 @@ if __name__ == '__main__':
 		    R, _ = detect(vehicle_net, vehicle_meta, bytes(img_path, encoding='utf-8'), thresh=vehicle_threshold)
 #			R, _ = detect(vehicle_net, vehicle_meta, bytes(f.name, encoding='utf-8'), thresh=vehicle_threshold)
 
-		    f.close()
+#S		    f.close()
 
 		    total_time = time() - starttime
 
@@ -130,15 +131,15 @@ if __name__ == '__main__':
 		    #            the if-block of "if len(R):" 
 		    if len(R):
 
-		        Iorig = cv2.imread(img_path)
-		        WH = np.array(Iorig.shape[1::-1],dtype=float)
-		        Lcars = []
-				
-		        Dcars = [] # [ST210917] collect all the file paths of crops of detected cars
+		        Iorig = cv2.imread(img_path) # [ST210919] original image for the final annotation
+		        WH = np.array(Iorig.shape[1::-1], dtype=float)
 
-		        for i,r in enumerate(R):
+		        Lcars = [] # [ST210919] store the class labels predicted by YOLO
+		        Dcars = [] # [ST210917] collect all the tempfile paths of crops of detected cars
 
-		            cx, cy, w, h = (np.array(r[2])/np.concatenate( (WH,WH) )).tolist()
+		        for i, r in enumerate(R):
+
+		            cx, cy, w, h = (np.array(r[2])/np.concatenate((WH, WH))).tolist()
 		            tl = np.array([cx - w/2., cy - h/2.])
 		            br = np.array([cx + w/2., cy + h/2.])
 		            label = Label(0, tl, br)
@@ -157,31 +158,31 @@ if __name__ == '__main__':
 #                    cv2.imwrite('%s/%s_%dcar.png' % (output_dir,bname,i),Icar)
 
 #                lwrite('%s/%s_cars.txt' % (output_dir,bname),Lcars)
-		##############################################################################
+		#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
+		        # [ST210919] Start license plate detection in each croped car image
 		        #S imgs_paths = glob('%s/*car.png' % input_dir)
-		        print("[INFO] Detecting License plate...")
-		        imgs_paths = Dcars # [ST210919] use tempfile
+		        img_paths = Dcars # [ST210919] all the croped car images are in tempfile
 
-		        print ('Searching for license plates using WPOD-NET')
+		        print('[INFO] Searching for license plates using WPOD-NET...')
 
-		        # [ST210917] collect all the detected license plates
+		        # [ST210917] Dlps is to hold all the copred images of detected license plates
 		        Dlps = []
 
-		        for i,img_path in enumerate(imgs_paths):
+		        for i, img_path in enumerate(img_paths):
 
-		            print ('\t Processing %s' % img_path)
+		            print('\t Processing %s' % img_path)
 
-		            bname = splitext(basename(img_path))[0]
+		            bname = splitext(basename(img_path))[0] # [ST210919] remove the .png
 		            Ivehicle = cv2.imread(img_path)
 
 		            ratio = float(max(Ivehicle.shape[:2]))/min(Ivehicle.shape[:2])
 		            side  = int(ratio*288.)
-		            bound_dim = min(side + (side%(2**4)),608)
-		            print ("\t\tBound dim: %d, ratio: %f" % (bound_dim,ratio))
+		            bound_dim = min(side + (side%(2**4)), 608)
+		            print("\t\tBound dim: %d, ratio: %f" % (bound_dim, ratio))
 
-		            Llp, LlpImgs, _ = detect_lp(wpod_net,im2single(Ivehicle),bound_dim,2**4,(240,80),lp_threshold)
+		            Llp, LlpImgs, _ = detect_lp(wpod_net, im2single(Ivehicle), bound_dim,2**4, (240,80), lp_threshold)
 
 		            if len(LlpImgs):
 		                Ilp = LlpImgs[0]
@@ -221,7 +222,7 @@ if __name__ == '__main__':
 		                #####################
 
 		        ##################################################################
-
+'''
 		        # [ST210919] Starting OCR for each license plate detected
 		        ocr_threshold = .4
 
@@ -259,7 +260,7 @@ if __name__ == '__main__':
 
 		                print ('No characters found')
 
-
+'''
 	except:
 		traceback.print_exc()
 		sys.exit(1)
