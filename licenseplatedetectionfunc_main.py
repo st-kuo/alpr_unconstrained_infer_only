@@ -1,3 +1,4 @@
+'''
 import sys, os
 import keras
 import cv2
@@ -11,6 +12,7 @@ from src.keras_utils 			import load_model, detect_lp
 from src.label 					import Shape, writeShapes
 
 from tempfile import NamedTemporaryFile
+'''
 
 
 def adjust_pts(pts, lroi):
