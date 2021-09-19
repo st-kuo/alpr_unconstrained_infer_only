@@ -125,7 +125,7 @@ if __name__ == '__main__':
 
 		    R = [r for r in R if r[0] in [b'car',b'bus',b'motorbike']] # [ST210914] add motorbike for motorcycle detection
 
-		    print ('\t\t%d cars found in %0.4f seconds' % (len(R), total_time))
+		    print('\t\t%d cars found in %0.4f seconds' % (len(R), total_time))
 
 		    # [ST210917] All the following license plate detection and OCR will be put into
 		    #            the if-block of "if len(R):" 
@@ -140,8 +140,8 @@ if __name__ == '__main__':
 		        for i, r in enumerate(R):
 
 		            cx, cy, w, h = (np.array(r[2])/np.concatenate((WH, WH))).tolist()
-		            tl = np.array([cx - w/2., cy - h/2.])
-		            br = np.array([cx + w/2., cy + h/2.])
+		            tl = np.array([cx - w/2., cy - h/2.]) # [ST210919] tl = top left
+		            br = np.array([cx + w/2., cy + h/2.]) # [ST210919] br = bottom right
 		            label = Label(0, tl, br)
 		            Dcar = crop_region(Iorig, label)
 
@@ -182,7 +182,7 @@ if __name__ == '__main__':
 		            bound_dim = min(side + (side%(2**4)), 608)
 		            print("\t\tBound dim: %d, ratio: %f" % (bound_dim, ratio))
 
-		            Llp, LlpImgs, _ = detect_lp(wpod_net, im2single(Ivehicle), bound_dim,2**4, (240,80), lp_threshold)
+		            Llp, LlpImgs, _ = detect_lp(wpod_net, im2single(Ivehicle), bound_dim, 2**4, (240, 80), lp_threshold)
 
 		            if len(LlpImgs):
 		                Ilp = LlpImgs[0]
