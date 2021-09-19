@@ -158,12 +158,14 @@ if __name__ == '__main__':
 		##############################################################################
 
 
-
 		        #S imgs_paths = glob('%s/*car.png' % input_dir)
 		        print("[INFO] Detecting License plate...")
 		        imgs_paths = Dcars # [ST210919] use tempfile
 
 		        print ('Searching for license plates using WPOD-NET')
+
+		        # [ST210917] collect all the detected license plates
+		        Dlps = []
 
 		        for i,img_path in enumerate(imgs_paths):
 
@@ -186,8 +188,55 @@ if __name__ == '__main__':
 
 		                s = Shape(Llp[0].pts)
 
-		                cv2.imwrite('%s/%s_lp.png' % (output_dir,bname),Ilp*255.)
-		                writeShapes('%s/%s_lp.txt' % (output_dir,bname),[s])
+#S		                cv2.imwrite('%s/%s_lp.png' % (output_dir,bname),Ilp*255.)
+#S		                writeShapes('%s/%s_lp.txt' % (output_dir,bname),[s])
+
+		                # [ST210917]
+		                Ilp_bytes = cv2.imencode('.png', Ilp)[1].tobytes()
+		                f = NamedTemporaryFile(mode='w+b', suffix='.png')
+		                f.write(Ilp_bytes*255)
+		                Dlps.append(f.name)
+		                tempfile_handlers.append(f)
+		                #####################
+
+		        ##################################################################
+
+		        # [ST210919] Starting OCR for each license plate detected
+		        ocr_threshold = .4
+
+		        img_paths = Dlps # [ST210917] i.e., Dlps from license plate detection
+
+		        print ('Performing OCR...')
+
+		        for i, img_path in enumerate(img_paths):
+
+		            print ('\tScanning %s' % img_path)
+
+#S		            bname = basename(splitext(img_path)[0])
+
+		            start = time()
+
+		            R, (width, height) = detect(ocr_net, ocr_meta, bytes(img_path, encoding='utf-8') ,thresh=ocr_threshold, nms=None)
+
+		            total_time = time() - start
+
+		            if len(R):
+
+		                L = dknet_label_conversion(R, width, height)
+		                L = nms(L, .45)
+
+		                L.sort(key=lambda x: x.tl()[0])
+		                lp_str = ''.join([chr(l.cl()) for l in L])
+
+		                with open('%s/%s_str.txt' % (output_dir, img_filename),'w') as f: # [ST210917] change "bname" to "img_filename"
+		                    f.write(lp_str + '\n')
+
+		                print ('\t\tLP: %s\nfound in %0.4f seconds' % (lp_str, total_time))
+
+		            else:
+
+		                print ('No characters found')
+
 
 	except:
 		traceback.print_exc()
