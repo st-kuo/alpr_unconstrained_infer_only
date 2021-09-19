@@ -55,7 +55,7 @@ if __name__ == '__main__':
 		vehicle_netcfg  = 'data/vehicle-detector/yolo-voc.cfg'
 		vehicle_dataset = 'data/vehicle-detector/voc.data'
 
-		print("[INFO] Load vehicle detection model...")
+		print("[INFO] Loading vehicle detection model...")
 		vehicle_net  = dn.load_net(bytes(vehicle_netcfg, encoding='utf-8'), bytes(vehicle_weights, encoding='utf-8'), 0)
 		vehicle_meta = dn.load_meta(bytes(vehicle_dataset, encoding='utf-8'))
 		############################################
@@ -79,7 +79,7 @@ if __name__ == '__main__':
 
 		lp_threshold = .5
 
-		print("[INFO] Load license plate detection model...")
+		print("[INFO] Loading license plate detection model...")
 		wpod_net_path = 'data/lp-detector/wpod-net_update1.h5' # [ST210919] change from [2] t0 [4] for matching cmd line arguments 
 		wpod_net = load_model(wpod_net_path)
 
@@ -87,7 +87,7 @@ if __name__ == '__main__':
 		if not isdir(output_dir):
 		    makedirs(output_dir)
 
-		print ('Searching for vehicles using YOLO...')
+		print ('[INFO] Searching for vehicles using YOLO...')
 
 		for i, img_path in enumerate(imgs_paths):
 
@@ -159,35 +159,35 @@ if __name__ == '__main__':
 
 
 
-		#S imgs_paths = glob('%s/*car.png' % input_dir)
-		print("[INFO] Detecting License plate...")
-		imgs_paths = Dcars # [ST210919] use tempfile
+		        #S imgs_paths = glob('%s/*car.png' % input_dir)
+		        print("[INFO] Detecting License plate...")
+		        imgs_paths = Dcars # [ST210919] use tempfile
 
-		print ('Searching for license plates using WPOD-NET')
+		        print ('Searching for license plates using WPOD-NET')
 
-		for i,img_path in enumerate(imgs_paths):
+		        for i,img_path in enumerate(imgs_paths):
 
-			print ('\t Processing %s' % img_path)
+		            print ('\t Processing %s' % img_path)
 
-			bname = splitext(basename(img_path))[0]
-			Ivehicle = cv2.imread(img_path)
+		            bname = splitext(basename(img_path))[0]
+		            Ivehicle = cv2.imread(img_path)
 
-			ratio = float(max(Ivehicle.shape[:2]))/min(Ivehicle.shape[:2])
-			side  = int(ratio*288.)
-			bound_dim = min(side + (side%(2**4)),608)
-			print ("\t\tBound dim: %d, ratio: %f" % (bound_dim,ratio))
+		            ratio = float(max(Ivehicle.shape[:2]))/min(Ivehicle.shape[:2])
+		            side  = int(ratio*288.)
+		            bound_dim = min(side + (side%(2**4)),608)
+		            print ("\t\tBound dim: %d, ratio: %f" % (bound_dim,ratio))
 
-			Llp,LlpImgs,_ = detect_lp(wpod_net,im2single(Ivehicle),bound_dim,2**4,(240,80),lp_threshold)
+		            Llp,LlpImgs,_ = detect_lp(wpod_net,im2single(Ivehicle),bound_dim,2**4,(240,80),lp_threshold)
 
-			if len(LlpImgs):
-				Ilp = LlpImgs[0]
-				Ilp = cv2.cvtColor(Ilp, cv2.COLOR_BGR2GRAY)
-				Ilp = cv2.cvtColor(Ilp, cv2.COLOR_GRAY2BGR)
+		            if len(LlpImgs):
+		                Ilp = LlpImgs[0]
+		                Ilp = cv2.cvtColor(Ilp, cv2.COLOR_BGR2GRAY)
+		                Ilp = cv2.cvtColor(Ilp, cv2.COLOR_GRAY2BGR)
 
-				s = Shape(Llp[0].pts)
+		                s = Shape(Llp[0].pts)
 
-				cv2.imwrite('%s/%s_lp.png' % (output_dir,bname),Ilp*255.)
-				writeShapes('%s/%s_lp.txt' % (output_dir,bname),[s])
+		                cv2.imwrite('%s/%s_lp.png' % (output_dir,bname),Ilp*255.)
+		                writeShapes('%s/%s_lp.txt' % (output_dir,bname),[s])
 
 	except:
 		traceback.print_exc()
