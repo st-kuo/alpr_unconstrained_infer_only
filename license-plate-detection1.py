@@ -58,18 +58,43 @@ if __name__ == '__main__':
 		print("[INFO] Load vehicle detection model...")
 		vehicle_net  = dn.load_net(bytes(vehicle_netcfg, encoding='utf-8'), bytes(vehicle_weights, encoding='utf-8'), 0)
 		vehicle_meta = dn.load_meta(bytes(vehicle_dataset, encoding='utf-8'))
-		
 		############################################
+		
+        # [ST210918] for ocr
+        ocr_weights = 'data/ocr/ocr-net.weights'
+        ocr_netcfg  = 'data/ocr/ocr-net.cfg'
+        ocr_dataset = 'data/ocr/ocr-net.data'
+
+        print("[INFO] Loading ocr model...")
+        ocr_net  = dn.load_net(bytes(ocr_netcfg, encoding='utf-8'), bytes(ocr_weights, encoding='utf-8'), 0)
+        ocr_meta = dn.load_meta(bytes(ocr_dataset, encoding='utf-8'))
+        ############################################
+                    
+        imgs_paths = image_files_from_folder(input_dir)
+        imgs_paths.sort()
 
 		
-		input_dir  = sys.argv[1]
-		output_dir = input_dir
+#S		input_dir  = sys.argv[1]
+#S		output_dir = input_dir
 
 		lp_threshold = .5
 
 		print("[INFO] Load license plate detection model...")
-		wpod_net_path = sys.argv[2]
+		wpod_net_path = 'data/lp-detector/wpod-net_update1.h5' # [ST210919] change from [2] t0 [4] for matching cmd line arguments 
 		wpod_net = load_model(wpod_net_path)
+
+        # [ST210919] Add vehicle detection code
+
+
+
+
+
+
+
+
+
+
+
 
 		imgs_paths = glob('%s/*car.png' % input_dir)
 
