@@ -161,7 +161,7 @@ if __name__ == '__main__':
 		#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
-		        # [ST210919] Start license plate detection in each croped car image
+		        # [ST210919] Start license plate detection and ocr in each croped car image
 		        #S imgs_paths = glob('%s/*car.png' % input_dir)
 		        img_paths = Dcars # [ST210919] all the croped car images are in tempfile
 
