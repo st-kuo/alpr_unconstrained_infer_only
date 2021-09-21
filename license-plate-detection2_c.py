@@ -222,18 +222,19 @@ if __name__ == '__main__':
 		                    lp_recog_time = time() - starttime
 
 		                    lp_texts.append(lp_str) # [ST210921] for annotation later
-		                    with open('%s/%s_str.txt' % (output_dir, img_filename),'w') as f: # [ST210917] change "bname" to "img_filename"
-		                        f.write(lp_str + '\n')
+#S		                    with open('%s/%s_str.txt' % (output_dir, img_filename),'w') as f: # [ST210917] change "bname" to "img_filename"
+#S		                        f.write(lp_str + '\n')
 
 		                    print ('\t\tLP: %s\nfound in %0.4f seconds' % (lp_str, lp_recog_time))
 
 		                else:
 
 		                    print ('No characters found')
-		                    lp_texts.append(None)
+		                    lp_texts.append(None) # [ST210921] License plate is detected, but no number is detected
 		            else:
 
 		                lp_bboxes.append(None) # [ST210921] see Line 201
+		                lp_texts.append(None) # [ST210921] Car is detected but no license plate detected
 						
 #S		                Dlps.append(f.name)
 #S		                tempfile_handlers.append(f)
