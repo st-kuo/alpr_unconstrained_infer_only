@@ -249,8 +249,8 @@ if __name__ == '__main__':
 		                # [ST210921] draw box for cars detected
 		                draw_label(Iorig, lcar, color=YELLOW, thickness=3) 
 
-		                if lp_bboxes[0]: # [ST210921] Checking if any license plates detected
-		                    pts = lp_bboxes[0].pts*lcar.wh().reshape(2,1) + lcar.tl().reshape(2,1)
+		                if lp_bboxes[i]: # [ST210921] Checking if any license plates detected
+		                    pts = lp_bboxes[i].pts*lcar.wh().reshape(2,1) + lcar.tl().reshape(2,1)
 		                    ptspx = pts*np.array(Iorig.shape[1::-1], dtype=float).reshape(2,1)
 		                    draw_losangle(Iorig, ptspx, RED, 3)
 
