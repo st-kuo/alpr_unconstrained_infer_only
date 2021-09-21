@@ -195,9 +195,9 @@ if __name__ == '__main__':
 #S		                writeShapes('%s/%s_lp.txt' % (output_dir,bname),[s])
 
 		                # [ST210917]
-		                Ilp_bytes = cv2.imencode('.png', Ilp)[1].tobytes()
+		                Ilp_bytes = cv2.imencode('.png', Ilp*255)[1].tobytes()
 		                f = NamedTemporaryFile(mode='w+b', suffix='.png')
-		                f.write(Ilp_bytes*255)
+		                f.write(Ilp_bytes)
 
 		                R, (width, height) = detect(ocr_net, ocr_meta, bytes(f.name, encoding='utf-8') ,thresh=ocr_threshold, nms=None)
 
@@ -222,7 +222,7 @@ if __name__ == '__main__':
 		                #####################
 
 		        ##################################################################
-'''
+		        '''
 		        # [ST210919] Starting OCR for each license plate detected
 		        ocr_threshold = .4
 
@@ -260,7 +260,7 @@ if __name__ == '__main__':
 
 		                print ('No characters found')
 
-'''
+		        '''
 	except:
 		traceback.print_exc()
 		sys.exit(1)
