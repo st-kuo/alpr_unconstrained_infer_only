@@ -26,6 +26,7 @@ from src.utils 				import crop_region, image_files_from_folder
 from darknet.python.darknet import detect
 
 from tempfile import NamedTemporaryFile
+from datetime import datetime
 ################################################################
 
 # [ST210919] for OCR
@@ -243,6 +244,7 @@ if __name__ == '__main__':
 		        # [ST210921] Start annotating the output image/frame
 		        YELLOW = (0, 255, 255)
 		        RED    = (0, 0, 255)
+		        lp_texts_concat = ""
 
 		        if Lcars: # [ST210921] Checking if any cars detected
 
@@ -258,10 +260,11 @@ if __name__ == '__main__':
 		                    llp = Label(0,tl=pts.min(1),br=pts.max(1))
 #S		                    write2img(Iorig, llp, lp_str)
 		                    write2img(Iorig, llp, lp_texts[i])
+		                    lp_texts_concat += lp_texts[i]
 
 		        cv2.imwrite('%s/%s_output.png' % (output_dir, img_filename), Iorig)
-		        with open('%s/%s' % (output_dir, csv_file), 'w') as f 
-		            f.write(img_filenname + "," + time() + "," + [lp_text + "," for lp_text in lp_texts])
+		        with open('%s/%s' % (output_dir, csv_file), 'a') as f: 
+		            f.write(img_filename + "," + datetime.now().strftime("%c") + "," + lp_texts_concat + "\n")
 
 		        ##################################################################
 		        '''
