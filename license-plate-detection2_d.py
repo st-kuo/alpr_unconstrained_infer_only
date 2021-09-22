@@ -259,7 +259,7 @@ if __name__ == '__main__':
 #S		                    write2img(Iorig, llp, lp_str)
 		                    write2img(Iorig, llp, lp_texts[i])
 
-		        cv2.imwrite('%s/%s_output.png' % (output_dir, img_filename), Iorig)\
+		        cv2.imwrite('%s/%s_output.png' % (output_dir, img_filename), Iorig)
 		        with open('%s/%s' % (output_dir, csv_file), 'w') as f 
 		            f.write(img_filenname + "," + time() + "," + [lp_text + "," for lp_text in lp_texts])
 
