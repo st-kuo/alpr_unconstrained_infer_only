@@ -261,12 +261,14 @@ if __name__ == '__main__':
 		                    llp = Label(0,tl=pts.min(1),br=pts.max(1))
 #S		                    write2img(Iorig, llp, lp_str)
 		                    write2img(Iorig, llp, lp_texts[i])
-		                    lp_texts_concat += str(lp_texts[i] + ",") # [ST210924] the comma is to separate
-		                    										  #            multiple license plates
+		                    lp_texts_concat += lp_texts[i] 
+		                    										  
+		                lp_texts_concat += "" # [ST210924] the comma is to separate multiple 
+		                					  #            license plates in one image
 
 		        cv2.imwrite('%s/%s_output.png' % (output_dir, img_filename), Iorig)
 		        with open('%s/%s' % (output_dir, csv_file), 'a') as f: 
-		            f.write(img_filename + "." + ext_img_filename + "," + datetime.now().strftime("%c") + "," + lp_texts_concat + "\n")
+		            f.write(img_filename + ext_img_filename + "," + datetime.now().strftime("%c") + "," + lp_texts_concat + "\n")
 
 		        ##################################################################
 		        '''
