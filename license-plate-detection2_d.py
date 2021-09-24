@@ -180,11 +180,12 @@ if __name__ == '__main__':
 		        lp_bboxes = [] # [ST210921] hold the license plate bboxes in a image
 		        lp_texts = [] # [ST210921] hold the license plate numbers in a image
 
-		        for i, img_path in enumerate(img_paths):
+		        for i, img_path in enumerate(img_paths): # [ST210924] Loop over all the cars detected
 
 		            print('\t Processing %s' % img_path)
 
 		            bname = splitext(basename(img_path))[0] # [ST210919] remove the .png
+		            ext_img_filename = splitext(basename(img_path))[1] # [ST210924] for CVS output
 		            Ivehicle = cv2.imread(img_path)
 
 		            ratio = float(max(Ivehicle.shape[:2]))/min(Ivehicle.shape[:2])
@@ -260,11 +261,12 @@ if __name__ == '__main__':
 		                    llp = Label(0,tl=pts.min(1),br=pts.max(1))
 #S		                    write2img(Iorig, llp, lp_str)
 		                    write2img(Iorig, llp, lp_texts[i])
-		                    lp_texts_concat += lp_texts[i]
+		                    lp_texts_concat += str(lp_texts[i] + ",") # [ST210924] the comma is to separate
+		                    										  #            multiple license plates
 
 		        cv2.imwrite('%s/%s_output.png' % (output_dir, img_filename), Iorig)
 		        with open('%s/%s' % (output_dir, csv_file), 'a') as f: 
-		            f.write(img_filename + "," + datetime.now().strftime("%c") + "," + lp_texts_concat + "\n")
+		            f.write(img_filename + "." + ext_img_filename + "," + datetime.now().strftime("%c") + "," + lp_texts_concat + "\n")
 
 		        ##################################################################
 		        '''
