@@ -231,11 +231,11 @@ if __name__ == '__main__':
 		                else:
 
 		                    print ('No characters found')
-		                    lp_texts.append(None) # [ST210921] License plate is detected, but no number is detected
+		                    lp_texts.append("?") # [ST210921] License plate is detected, but no number is detected
 		            else:
 
 		                lp_bboxes.append(None) # [ST210921] see Line 201
-		                lp_texts.append(None) # [ST210921] Car is detected but no license plate detected
+		                lp_texts.append("?") # [ST210921] Car is detected but no license plate detected
 						
 #S		                Dlps.append(f.name)
 #S		                tempfile_handlers.append(f)
