@@ -261,7 +261,7 @@ if __name__ == '__main__':
 		                    llp = Label(0,tl=pts.min(1),br=pts.max(1))
 #S		                    write2img(Iorig, llp, lp_str)
 		                    write2img(Iorig, llp, lp_texts[i])
-		                    lp_texts_concat += lp_texts[i] 
+		                    lp_texts_concat += lp_texts[i] + " "
 		                    										  
 		                lp_texts_concat += "" # [ST210924] the comma is to separate multiple 
 		                					  #            license plates in one image
