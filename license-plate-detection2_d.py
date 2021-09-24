@@ -109,6 +109,7 @@ if __name__ == '__main__':
 
 		    # [ST210917] This original filename will be used to indicate each image in the csv file
 		    img_filename = basename(splitext(img_path)[0])
+		    ext_img_filename = splitext(basename(img_path))[1] # [ST210924] for CVS output
 
 		    # [ST210917] This is the successful pattern to use tempfile to store and
 		    #            retrive image.
@@ -185,7 +186,7 @@ if __name__ == '__main__':
 		            print('\t Processing %s' % img_path)
 
 		            bname = splitext(basename(img_path))[0] # [ST210919] remove the .png
-		            ext_img_filename = splitext(basename(img_path))[1] # [ST210924] for CVS output
+
 		            Ivehicle = cv2.imread(img_path)
 
 		            ratio = float(max(Ivehicle.shape[:2]))/min(Ivehicle.shape[:2])
